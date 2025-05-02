@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taller Guiado de Pandas en Python</title>
+    <style>
+        /* Estilos generales (similares a la versión anterior, ajustados para taller) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #34495e;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f7f9f9; /* Blanco hueso */
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 2px solid #16a085; /* Turquesa oscuro */
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        h2 {
+            color: #1f618d;
+            margin-top: 30px;
+            text-align: center; /* Centrar subtítulo */
+        }
+         h3.section-title {
+             color: #16a085; /* Turquesa oscuro */
+             margin-top: 40px;
+             border-bottom: 1px solid #a3e4d7; /* Turquesa claro */
+             padding-bottom: 5px;
+             font-weight: 600;
+        }
+        .student-info { /* Se puede mantener para identificar al usuario si es útil */
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .student-info input {
+            border: 1px solid #bdc3c7;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .instructions {
+            background-color: #e8f6f3; /* Verde muy pálido */
+            padding: 15px;
+            border-left: 4px solid #1abc9c; /* Turquesa */
+            margin-bottom: 20px;
+            border-radius: 0 5px 5px 0;
+        }
+        .workshop-step { /* Renombrado desde 'question' */
+            background-color: white;
+            border: 1px solid #e5e7e9; /* Gris más claro */
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .step-title { /* Renombrado desde 'question-title' */
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            /* Sin span de puntos */
+        }
+        .step-description { /* Renombrado desde 'question-description' */
+            margin-bottom: 15px;
+            color: #566573;
+            padding: 10px;
+            background-color: #f8f9f9;
+            border-radius: 4px;
+        }
+        .code-container {
+            background-color: #f5f5f5; border: 1px solid #ddd; border-radius: 4px;
+            padding: 15px; font-family: 'Courier New', Courier, monospace; font-size: 15px;
+            position: relative; margin-bottom: 15px; line-height: 1.5;
+            white-space: pre-wrap; overflow-x: auto;
+        }
+        .code-placeholder {
+            background-color: #fff9c4; border: 1px dashed #fbc02d; border-radius: 3px;
+            padding: 0 5px; color: #333; font-weight: normal; display: inline-block; min-width: 20px;
+        }
+        .code-placeholder.correct {
+            background-color: #c8e6c9; border: 1px solid #66bb6a; color: #2e7d32;
+        }
+        .code-placeholder.incorrect {
+            background-color: #ffcdd2; border: 1px solid #ef5350; color: #c62828;
+        }
+        .code-comment { color: #1abc9c; font-style: italic; } /* Turquesa para comentarios */
+
+        button.action-button { /* Botón principal del taller */
+             background-color: #16a085; /* Turquesa oscuro */
+             color: white; border: none; padding: 10px 18px; border-radius: 4px;
+             cursor: pointer; font-size: 15px; margin-top: 10px; transition: background-color 0.3s;
+             display: inline-block; margin-left: 0; margin-right: 10px;
+        }
+         button.action-button:hover { background-color: #117a65; } /* Más oscuro al pasar */
+
+        .feedback-area { margin-top: 10px; padding: 8px; border-radius: 4px; min-height: 20px; font-size: 0.95em;}
+        .feedback-area.correct-feedback { background-color: #eafaf1; border-left: 3px solid #2ecc71; }
+        .feedback-area.incorrect-feedback { background-color: #fdebd0; border-left: 3px solid #f39c12; }
+        .feedback-area strong { font-weight: 600; } /* Resaltar sugerencias */
+
+        .hidden { display: none; }
+         /* No hay sección de resultados ni barra de progreso */
+        .dataframe-example { background-color: #f8f9f9; border: 1px solid #d6dbdf; padding: 8px; margin-bottom: 10px; font-family: monospace; white-space: pre; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <h1>Taller Guiado e Iterativo de Conceptos Pandas en Python</h1>
+    <h2>¡Aprende Haciendo!</h2>
+
+    <div class="student-info">
+        <div><label for="nombre"><strong>Nombre (Opcional):</strong></label><input type="text" id="nombre" placeholder="Ingresa tu nombre si lo deseas"></div>
+        <div><label for="apellidos"><strong>Apellidos (Opcional):</strong></label><input type="text" id="apellidos" placeholder="Ingresa tus apellidos si lo deseas"></div>
+    </div>
+
+    <div class="instructions">
+        <h3>Bienvenido/a al Taller Guiado de Pandas</h3>
+        <ul>
+            <li>Sigue los pasos completando los <strong>espacios en blanco</strong> (<span class="code-placeholder">[...]</span>) en el código.</li>
+            <li>Los comentarios <span class="code-comment"># Rellena:</span> te darán una pista. Usa el alias `pd` para Pandas.</li>
+            <li>Haz clic en <strong>"Comprobar Paso"</strong> para verificar tu sintaxis y obtener retroalimentación.</li>
+            <li>Si es correcto, aparecerá una explicación o sugerencia. Si no, recibirás una pista para corregirlo.</li>
+            <li>¡El objetivo es practicar y entender cómo funciona cada comando! No hay puntuación.</li>
+            <li>Temas: Crear, Leer/Guardar DataFrames, Seleccionar/Filtrar datos, Operaciones básicas.</li>
+        </ul>
+    </div>
+
+    <div id="workshop-steps-container">
+
+        <h3 class="section-title">1. Configuración y Creación de DataFrames</h3>
+
+        <div class="workshop-step" id="step1"><div class="step-title">Paso 1: Importar Pandas</div><div class="step-description">El primer paso siempre es importar la librería Pandas. Usaremos el alias estándar `pd`.</div><div class="code-container"><pre><span class="code-placeholder" id="step1-part1" contenteditable="true">[...]</span> pandas <span class="code-placeholder" id="step1-part2" contenteditable="true">[...]</span> pd <span class="code-comment"># Rellena: Comando estándar para importar pandas</span>
+print("¡Pandas listo!")</pre></div><button class="action-button" onclick="checkStep(1)">Comprobar Paso</button><div id="step1-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step2"><div class="step-title">Paso 2: Preparar Datos (Diccionario)</div><div class="step-description">Vamos a crear un diccionario de Python con los datos que usaremos para nuestro primer DataFrame.</div><div class="code-container"><pre>datos_iniciales = {
+    'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'],
+    'Edad': [28, 34, 29, 42],
+    'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']
+}
+<span class="code-placeholder" id="step2-part1" contenteditable="true">[...]</span>(datos_iniciales) <span class="code-comment"># Rellena: Comando para imprimir el diccionario y verificarlo</span></pre></div><button class="action-button" onclick="checkStep(2)">Comprobar Paso</button><div id="step2-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step3"><div class="step-title">Paso 3: Crear DataFrame desde Diccionario</div><div class="step-description">Ahora, usa el diccionario `datos_iniciales` para crear tu primer DataFrame llamado `df_personas`.</div><div class="code-container"><pre>import pandas as pd
+datos_iniciales = {'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']}
+
+df_personas = pd.<span class="code-placeholder" id="step3-part1" contenteditable="true">[...]</span>(datos_iniciales) <span class="code-comment"># Rellena: Función para crear el DataFrame</span>
+print("DataFrame creado:")
+print(df_personas)</pre></div><button class="action-button" onclick="checkStep(3)">Comprobar Paso</button><div id="step3-feedback" class="feedback-area"></div></div>
+
+         <div class="workshop-step" id="step4"><div class="step-title">Paso 4: Crear DataFrame con Índice Personalizado</div><div class="step-description">Crea un DataFrame similar, pero especifica un índice personalizado usando una lista.</div><div class="code-container"><pre>import pandas as pd
+datos = {'ColA': [10, 20], 'ColB': [30, 40]}
+indices = ['fila1', 'fila2']
+df_idx = pd.DataFrame(datos, index=<span class="code-placeholder" id="step4-part1" contenteditable="true">[...]</span>) <span class="code-comment"># Rellena: Pasa la lista de índices al crear el DF</span>
+print(df_idx)</pre></div><button class="action-button" onclick="checkStep(4)">Comprobar Paso</button><div id="step4-feedback" class="feedback-area"></div></div>
+
+        <h3 class="section-title">2. Lectura y Escritura de Archivos</h3>
+
+        <div class="workshop-step" id="step5"><div class="step-title">Paso 5: Guardar DataFrame a CSV</div><div class="step-description">Guarda el DataFrame `df_personas` en un archivo llamado `personas.csv`. Asegúrate de no incluir el índice numérico automático en el archivo.</div><div class="code-container"><pre># (Continuación del Paso 3) Asegúrate de tener df_personas definido
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+df_personas.<span class="code-placeholder" id="step5-part1" contenteditable="true">[...]</span>('personas.csv', index=<span class="code-placeholder" id="step5-part2" contenteditable="true">[...]</span>) <span class="code-comment"># Rellena: Método para guardar a CSV y argumento para omitir índice</span>
+print("Archivo personas.csv guardado.")</pre></div><button class="action-button" onclick="checkStep(5)">Comprobar Paso</button><div id="step5-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step6"><div class="step-title">Paso 6: Leer DataFrame desde CSV</div><div class="step-description">Ahora, lee el archivo `personas.csv` que acabas de guardar en un nuevo DataFrame llamado `df_leido`.</div><div class="code-container"><pre>import pandas as pd
+# Asume que personas.csv existe por el paso anterior
+
+df_leido = pd.<span class="code-placeholder" id="step6-part1" contenteditable="true">[...]</span>('personas.csv') <span class="code-comment"># Rellena: Función para leer un archivo CSV</span>
+print("DataFrame leído de CSV:")
+print(df_leido.head()) # Mostramos solo las primeras filas</pre></div><button class="action-button" onclick="checkStep(6)">Comprobar Paso</button><div id="step6-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step7"><div class="step-title">Paso 7: Guardar DataFrame a Excel</div><div class="step-description">Guarda el DataFrame `df_personas` en un archivo Excel llamado `personas.xlsx`, en una hoja llamada 'Datos'. No incluyas el índice. (Necesita `openpyxl`: `pip install openpyxl`)</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+df_personas.<span class="code-placeholder" id="step7-part1" contenteditable="true">[...]</span>('personas.xlsx', sheet_name='Datos', index=False) <span class="code-comment"># Rellena: Método para guardar a Excel</span>
+print("Archivo personas.xlsx guardado.")</pre></div><button class="action-button" onclick="checkStep(7)">Comprobar Paso</button><div id="step7-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step8"><div class="step-title">Paso 8: Leer DataFrame desde Excel</div><div class="step-description">Lee la hoja 'Datos' del archivo `personas.xlsx` en un DataFrame `df_excel`.</div><div class="code-container"><pre>import pandas as pd
+# Asume que personas.xlsx existe por el paso anterior
+
+df_excel = pd.<span class="code-placeholder" id="step8-part1" contenteditable="true">[...]</span>('personas.xlsx', sheet_name='Datos') <span class="code-comment"># Rellena: Función para leer desde Excel</span>
+print("DataFrame leído de Excel:")
+print(df_excel.head())</pre></div><button class="action-button" onclick="checkStep(8)">Comprobar Paso</button><div id="step8-feedback" class="feedback-area"></div></div>
+
+        <h3 class="section-title">3. Inspección y Selección Básica</h3>
+
+        <div class="workshop-step" id="step9"><div class="step-title">Paso 9: Ver las Primeras Filas</div><div class="step-description">Usa el DataFrame `df_personas`. Visualiza las primeras 2 filas para tener una idea rápida de los datos.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+primeras_filas = df_personas.<span class="code-placeholder" id="step9-part1" contenteditable="true">[...]</span>(2) <span class="code-comment"># Rellena: Método para ver las N primeras filas</span>
+print(primeras_filas)</pre></div><button class="action-button" onclick="checkStep(9)">Comprobar Paso</button><div id="step9-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step10"><div class="step-title">Paso 10: Ver las Últimas Filas</div><div class="step-description">Ahora, visualiza las últimas 2 filas del DataFrame `df_personas`.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+ultimas_filas = df_personas.<span class="code-placeholder" id="step10-part1" contenteditable="true">[...]</span>(2) <span class="code-comment"># Rellena: Método para ver las N últimas filas</span>
+print(ultimas_filas)</pre></div><button class="action-button" onclick="checkStep(10)">Comprobar Paso</button><div id="step10-feedback" class="feedback-area"></div></div>
+
+         <div class="workshop-step" id="step11"><div class="step-title">Paso 11: Seleccionar una Columna</div><div class="step-description">Selecciona únicamente la columna 'Nombre' del DataFrame `df_personas`. El resultado será un objeto Series.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+columna_nombre = df_personas<span class="code-placeholder" id="step11-part1" contenteditable="true">[...]</span> <span class="code-comment"># Rellena: Selección de columna por nombre (usa corchetes)</span>
+print("Columna 'Nombre':")
+print(columna_nombre)</pre></div><button class="action-button" onclick="checkStep(11)">Comprobar Paso</button><div id="step11-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step12"><div class="step-title">Paso 12: Seleccionar Múltiples Columnas</div><div class="step-description">Selecciona las columnas 'Nombre' y 'Ciudad' del DataFrame `df_personas`. El resultado será otro DataFrame.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+columnas_seleccionadas = df_personas<span class="code-placeholder" id="step12-part1" contenteditable="true">[...]</span> <span class="code-comment"># Rellena: Selección de múltiples columnas (usa una lista dentro de corchetes)</span>
+print("Columnas 'Nombre' y 'Ciudad':")
+print(columnas_seleccionadas)</pre></div><button class="action-button" onclick="checkStep(12)">Comprobar Paso</button><div id="step12-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step13"><div class="step-title">Paso 13: Obtener Nombres de Columnas</div><div class="step-description">Obtén una lista (o un Index) con todos los nombres de las columnas del DataFrame `df_personas`.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+nombres_cols = df_personas.<span class="code-placeholder" id="step13-part1" contenteditable="true">[...]</span> <span class="code-comment"># Rellena: Atributo para obtener los nombres de columna</span>
+print("Nombres de las columnas:")
+print(nombres_cols)</pre></div><button class="action-button" onclick="checkStep(13)">Comprobar Paso</button><div id="step13-feedback" class="feedback-area"></div></div>
+
+        <h3 class="section-title">4. Filtrado de Datos (Selección por Condición)</h3>
+
+        <div class="workshop-step" id="step14"><div class="step-title">Paso 14: Filtrar por Valor Numérico</div><div class="step-description">Selecciona del DataFrame `df_personas` solo las filas donde la 'Edad' es mayor a 30 años.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+mayores_30 = df_personas[df_personas['Edad'] <span class="code-placeholder" id="step14-part1" contenteditable="true">[...]</span> 30] <span class="code-comment"># Rellena: Operador de comparación ">"</span>
+print("Personas mayores de 30:")
+print(mayores_30)</pre></div><button class="action-button" onclick="checkStep(14)">Comprobar Paso</button><div id="step14-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step15"><div class="step-title">Paso 15: Filtrar por Valor de Texto Exacto</div><div class="step-description">Selecciona del DataFrame `df_personas` solo las filas donde la 'Ciudad' es exactamente 'Medellin'.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+de_medellin = df_personas[df_personas['Ciudad'] <span class="code-placeholder" id="step15-part1" contenteditable="true">[...]</span> 'Medellin'] <span class="code-comment"># Rellena: Operador de igualdad "=="</span>
+print("Personas de Medellin:")
+print(de_medellin)</pre></div><button class="action-button" onclick="checkStep(15)">Comprobar Paso</button><div id="step15-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step16"><div class="step-title">Paso 16: Filtrado con Múltiples Condiciones (AND)</div><div class="step-description">Selecciona filas donde la 'Ciudad' es 'Medellin' **y** la 'Edad' es menor a 30. Recuerda usar `&` y paréntesis para cada condición.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+filtro_and = df_personas[(df_personas['Ciudad'] == 'Medellin') <span class="code-placeholder" id="step16-part1" contenteditable="true">[...]</span> (df_personas['Edad'] < 30)] <span class="code-comment"># Rellena: Operador lógico AND '&'</span>
+print("De Medellin y menores de 30:")
+print(filtro_and)</pre></div><button class="action-button" onclick="checkStep(16)">Comprobar Paso</button><div id="step16-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step17"><div class="step-title">Paso 17: Filtrado con Múltiples Condiciones (OR)</div><div class="step-description">Selecciona filas donde la 'Edad' sea menor a 30 **o** la 'Ciudad' sea 'Cali'. Recuerda usar `|` y paréntesis.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+filtro_or = df_personas[(df_personas['Edad'] < 30) <span class="code-placeholder" id="step17-part1" contenteditable="true">[...]</span> (df_personas['Ciudad'] == 'Cali')] <span class="code-comment"># Rellena: Operador lógico OR '|'</span>
+print("Menores de 30 o de Cali:")
+print(filtro_or)</pre></div><button class="action-button" onclick="checkStep(17)">Comprobar Paso</button><div id="step17-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step18"><div class="step-title">Paso 18: Filtrado con `.isin()`</div><div class="step-description">Selecciona filas donde la 'Ciudad' sea 'Bogota' o 'Cali' usando el método `.isin()` con una lista.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+ciudades = ['Bogota', 'Cali']
+filtro_isin = df_personas[df_personas['Ciudad'].<span class="code-placeholder" id="step18-part1" contenteditable="true">[...]</span>(ciudades)] <span class="code-comment"># Rellena: Método isin()</span>
+print("De Bogota o Cali (usando isin):")
+print(filtro_isin)</pre></div><button class="action-button" onclick="checkStep(18)">Comprobar Paso</button><div id="step18-feedback" class="feedback-area"></div></div>
+
+         <div class="workshop-step" id="step19"><div class="step-title">Paso 19: Filtrado con `.query()`</div><div class="step-description">Usa el método `.query()` para seleccionar filas donde `Edad >= 30` y `Ciudad != 'Medellin'`.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+filtro_query = df_personas.<span class="code-placeholder" id="step19-part1" contenteditable="true">[...]</span>('Edad >= 30 and Ciudad != "Medellin"') <span class="code-comment"># Rellena: Método query()</span>
+print("Con query (Edad >= 30 y no Medellin):")
+print(filtro_query)</pre></div><button class="action-button" onclick="checkStep(19)">Comprobar Paso</button><div id="step19-feedback" class="feedback-area"></div></div>
+
+        <h3 class="section-title">5. Operaciones con Columnas y Filas</h3>
+
+        <div class="workshop-step" id="step20"><div class="step-title">Paso 20: Crear Nueva Columna basada en Otras</div><div class="step-description">Crea una nueva columna 'AñoNacimiento' restando la 'Edad' del año actual (usa 2025 como referencia).</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+año_actual = 2025 # Usamos la fecha proporcionada en el contexto
+
+df_personas['AñoNacimiento'] = año_actual - df_personas<span class="code-placeholder" id="step20-part1" contenteditable="true">[...]</span> <span class="code-comment"># Rellena: Selecciona la columna 'Edad'</span>
+print("DataFrame con Año de Nacimiento:")
+print(df_personas)</pre></div><button class="action-button" onclick="checkStep(20)">Comprobar Paso</button><div id="step20-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step21"><div class="step-title">Paso 21: Aplicar Operación Matemática Simple</div><div class="step-description">Supongamos que 'Edad' es en realidad 'Meses'. Convierte la columna 'Edad' a años dividiéndola por 12. Crea una nueva columna 'EdadEnAños'.</div><div class="code-container"><pre>import pandas as pd
+df_meses = pd.DataFrame({'Meses': [24, 36, 18]})
+
+df_meses['EdadEnAños'] = df_meses['Meses'] <span class="code-placeholder" id="step21-part1" contenteditable="true">[...]</span> 12 <span class="code-comment"># Rellena: Operador de división '/'</span>
+print(df_meses)</pre></div><button class="action-button" onclick="checkStep(21)">Comprobar Paso</button><div id="step21-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step22"><div class="step-title">Paso 22: Aplicar una Función con `.apply()`</div><div class="step-description">Crea una columna 'Inicial' que contenga solo la primera letra del 'Nombre' usando `.apply()` y una función lambda.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+df_personas['Inicial'] = df_personas['Nombre'].<span class="code-placeholder" id="step22-part1" contenteditable="true">[...]</span>(lambda nombre: nombre[0]) <span class="code-comment"># Rellena: Método apply()</span>
+print("DataFrame con Inicial:")
+print(df_personas)</pre></div><button class="action-button" onclick="checkStep(22)">Comprobar Paso</button><div id="step22-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step23"><div class="step-title">Paso 23: Seleccionar Filas por Etiqueta de Índice (`.loc`)</div><div class="step-description">Usaremos el DataFrame `df_idx` del Paso 4. Selecciona la fila con la etiqueta 'fila1'.</div><div class="code-container"><pre># (Continuación del Paso 4)
+# df_idx = pd.DataFrame({'ColA': [10, 20], 'ColB': [30, 40]}, index=['fila1', 'fila2'])
+
+fila_seleccionada_loc = df_idx.<span class="code-placeholder" id="step23-part1" contenteditable="true">[...]</span>['fila1'] <span class="code-comment"># Rellena: Selección por etiqueta con .loc</span>
+print("Fila con etiqueta 'fila1':")
+print(fila_seleccionada_loc)</pre></div><button class="action-button" onclick="checkStep(23)">Comprobar Paso</button><div id="step23-feedback" class="feedback-area"></div></div>
+
+        <div class="workshop-step" id="step24"><div class="step-title">Paso 24: Seleccionar Filas por Posición (`.iloc`)</div><div class="step-description">Usa el DataFrame `df_personas`. Selecciona la *segunda* fila (índice de posición 1).</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+segunda_fila = df_personas.<span class="code-placeholder" id="step24-part1" contenteditable="true">[...]</span>[1] <span class="code-comment"># Rellena: Selección por posición con .iloc</span>
+print("Segunda fila (posición 1):")
+print(segunda_fila)</pre></div><button class="action-button" onclick="checkStep(24)">Comprobar Paso</button><div id="step24-feedback" class="feedback-area"></div></div>
+
+         <div class="workshop-step" id="step25"><div class="step-title">Paso 25: Seleccionar Filas y Columnas con `.loc`</div><div class="step-description">Del DataFrame `df_personas`, selecciona las filas con índices 0 y 2, y únicamente las columnas 'Nombre' y 'Edad'.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+seleccion_loc = df_personas.<span class="code-placeholder" id="step25-part1" contenteditable="true">[...]</span>[[0, 2], ['Nombre', 'Edad']] <span class="code-comment"># Rellena: Selección por etiqueta .loc[filas, columnas]</span>
+print("Selección específica con .loc:")
+print(seleccion_loc)</pre></div><button class="action-button" onclick="checkStep(25)">Comprobar Paso</button><div id="step25-feedback" class="feedback-area"></div></div>
+
+         <div class="workshop-step" id="step26"><div class="step-title">Paso 26: Buscar el Índice del Valor Máximo</div><div class="step-description">Encuentra el índice de la fila donde se encuentra la 'Edad' máxima en `df_personas`.</div><div class="code-container"><pre># (Continuación del Paso 3)
+# df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
+
+indice_max_edad = df_personas['Edad'].<span class="code-placeholder" id="step26-part1" contenteditable="true">[...]</span>() <span class="code-comment"># Rellena: Método para obtener el índice del valor máximo</span>
+print(f"Índice de la persona con máxima edad: {indice_max_edad}")
+print("Datos de esa persona:")
+print(df_personas.loc[indice_max_edad])</pre></div><button class="action-button" onclick="checkStep(26)">Comprobar Paso</button><div id="step26-feedback" class="feedback-area"></div></div>
+
+        <h3 class="section-title" style="text-align: center; border-bottom: none; margin-top: 50px;">¡Fin del Taller Guiado!</h3>
+        <p style="text-align: center; font-size: 1.1em;">¡Felicidades por completar los pasos! Esperamos que este taller te haya ayudado a practicar los conceptos básicos de Pandas.</p>
+
+    </div>
+
+    <script>
+        // Respuestas correctas para cada paso
+        const correctAnswers = {
+            step1: ["import", "as"],
+            step2: ["print"],
+            step3: ["DataFrame"],
+            step4: ["indices"],
+            step5: ["to_csv", "False"],
+            step6: ["read_csv"],
+            step7: ["to_excel"],
+            step8: ["read_excel"],
+            step9: ["head"],
+            step10: ["tail"],
+            step11: ["['Nombre']"], // Aceptar comillas simples o dobles
+            step12: ["[['Nombre', 'Ciudad']]"], // Aceptar comillas simples o dobles
+            step13: ["columns"],
+            step14: [">"],
+            step15: ["=="],
+            step16: ["&"],
+            step17: ["|"],
+            step18: ["isin"],
+            step19: ["query"],
+            step20: ["['Edad']"], // Aceptar comillas simples o dobles
+            step21: ["/"],
+            step22: ["apply"],
+            step23: ["loc"],
+            step24: ["iloc"],
+            step25: ["loc"],
+            step26: ["idxmax"]
+        };
+
+        // No hay pointValues ni results para puntuación
+
+        const verifiedSteps = {}; // Para saber qué pasos ya se verificaron
+
+        // Función para verificar un paso y dar feedback/guía
+        function checkStep(stepNumber) {
+            const stepId = `step${stepNumber}`;
+            const feedbackDiv = document.getElementById(`${stepId}-feedback`);
+            feedbackDiv.innerHTML = ""; // Limpiar feedback anterior
+            feedbackDiv.className = 'feedback-area'; // Reset class
+
+            let allCorrect = true;
+            let correctCount = 0;
+            const correctAnswersList = correctAnswers[stepId];
+            const totalParts = correctAnswersList.length;
+
+            for (let i = 1; i <= totalParts; i++) {
+                const partId = `${stepId}-part${i}`;
+                const placeholder = document.getElementById(partId);
+                 if (!placeholder) { console.error(`Placeholder ${partId} no encontrado.`); continue; }
+                const userAnswer = placeholder.textContent.trim();
+                let correctAnswer = correctAnswersList[i-1];
+
+                placeholder.classList.remove("correct", "incorrect");
+
+                // Normalizaciones específicas
+                let normalizedUserAnswer = userAnswer;
+                let normalizedCorrectAnswer = correctAnswer;
+
+                // Permitir comillas simples o dobles en selecciones
+                 if (stepId === 'step11' || stepId === 'step12' || stepId === 'step20') {
+                     normalizedUserAnswer = userAnswer.replace(/'/g, '"');
+                     normalizedCorrectAnswer = correctAnswer.replace(/'/g, '"');
+                 }
+                 // Para index=False
+                 if (stepId === 'step5' && i === 2) {
+                      normalizedUserAnswer = userAnswer.toLowerCase();
+                      normalizedCorrectAnswer = correctAnswer.toLowerCase();
+                 }
+                 // Quitar paréntesis si no van (atributos)
+                 if (!correctAnswer.endsWith("()") && !['>', '==', '&', '|', '/'].includes(correctAnswer)) {
+                      normalizedUserAnswer = userAnswer.replace(/\(\)$/, '');
+                 }
+
+
+                if (normalizedUserAnswer === normalizedCorrectAnswer) {
+                    placeholder.classList.add("correct");
+                    correctCount++;
+                } else {
+                    placeholder.classList.add("incorrect");
+                    allCorrect = false;
+                     // Check si olvidó paréntesis
+                     if (correctAnswer.endsWith("()") && !userAnswer.endsWith("()") && !['>', '==', '&', '|', '/'].includes(correctAnswer)) {
+                         if (userAnswer + "()" === correctAnswer) { /* Podría dar una pista específica */ }
+                     }
+                }
+            }
+
+            verifiedSteps[stepId] = allCorrect; // Marcar si el paso está correcto
+
+            // Mostrar retroalimentación/guía
+             if (allCorrect) {
+                feedbackDiv.classList.add('correct-feedback');
+                let explanation = "¡Excelente! Código correcto.";
+                // Añadir explicaciones específicas por paso si se desea
+                switch(stepId) {
+                    case 'step1': explanation += " Ahora puedes usar `pd` para llamar funciones de Pandas."; break;
+                    case 'step3': explanation += " Has creado la estructura básica de Pandas."; break;
+                    case 'step5': explanation += " El archivo CSV es útil para compartir datos."; break;
+                    case 'step6': explanation += " Así cargas datos externos en Pandas."; break;
+                    case 'step11': explanation += " Seleccionar una columna devuelve una Serie."; break;
+                    case 'step12': explanation += " Seleccionar varias columnas devuelve un DataFrame."; break;
+                    case 'step14': explanation += " Filtrar es clave para analizar subconjuntos."; break;
+                    case 'step16': explanation += " El operador `&` requiere paréntesis en cada condición."; break;
+                    case 'step17': explanation += " El operador `|` también requiere paréntesis."; break;
+                    case 'step18': explanation += " `.isin()` es muy útil para listas de valores."; break;
+                    case 'step20': explanation += " Puedes crear columnas nuevas fácilmente."; break;
+                    case 'step22': explanation += " `.apply()` permite operaciones más complejas por elemento."; break;
+                    case 'step23': explanation += " `.loc` selecciona usando las ETIQUETAS del índice."; break;
+                    case 'step24': explanation += " `.iloc` selecciona usando la POSICIÓN numérica (empezando en 0)."; break;
+                    case 'step26': explanation += " `.idxmax()` devuelve el índice (no el valor) del máximo."; break;
+                }
+                feedbackDiv.innerHTML = `<strong>${explanation}</strong>`;
+
+            } else {
+                 feedbackDiv.classList.add('incorrect-feedback');
+                 let hint = "Parece que hay un error.";
+                 // Añadir pistas específicas si es posible
+                 if (stepId === 'step1') hint = "Revisa la palabra clave para importar y el alias común.";
+                 else if (stepId === 'step5' && !allCorrect && correctCount === 1) hint = "Verifica el valor booleano para omitir el índice.";
+                 else if (stepId === 'step12') hint = "Recuerda usar una lista de nombres *dentro* de los corchetes.";
+                 else if (stepId === 'step16' || stepId === 'step17') hint = "Asegúrate de poner paréntesis `()` alrededor de cada condición antes de usar `&` o `|`.";
+                 else if (stepId === 'step23' || stepId === 'step25') hint = "Revisa si estás usando `.loc` correctamente para selección por etiquetas.";
+                 else if (stepId === 'step24') hint = "Revisa si estás usando `.iloc` correctamente para selección por posición.";
+                 else hint = "Revisa la sintaxis del método o el operador que necesitas usar.";
+
+                 feedbackDiv.innerHTML = `<strong>Sugerencia:</strong> ${hint} Intenta corregirlo y comprueba de nuevo.`;
+            }
+        }
+
+        // No hay función calculateFinalGrade ni updateProgressBar
+
+        // Hacer que los placeholders sean editables (sin cambios)
+        document.querySelectorAll('.code-placeholder').forEach(placeholder => {
+            placeholder.dataset.placeholder = '[...]';
+            placeholder.addEventListener('focus', function() { if (this.textContent === this.dataset.placeholder) { this.textContent = ""; } this.style.minWidth = '40px'; });
+            placeholder.addEventListener('blur', function() { if (this.textContent.trim() === "") { this.textContent = this.dataset.placeholder; } this.style.minWidth = '20px'; });
+            if (placeholder.textContent.trim() === '') { placeholder.textContent = placeholder.dataset.placeholder; }
+        });
+
+        // No hay inicialización de barra de progreso
+
+    </script>
+</body>
+</html>
