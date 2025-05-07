@@ -209,17 +209,17 @@ print(primeras_filas)</pre></div><button class="action-button" onclick="checkSte
 ultimas_filas = df_personas.<span class="code-placeholder" id="step10-part1" contenteditable="true">[...]</span>(2) <span class="code-comment"># Rellena: Método para ver las N últimas filas</span>
 print(ultimas_filas)</pre></div><button class="action-button" onclick="checkStep(10)">Comprobar Paso</button><div id="step10-feedback" class="feedback-area"></div></div>
 
-         <div class="workshop-step" id="step11"><div class="step-title">Paso 11: Seleccionar una Columna</div><div class="step-description">Selecciona únicamente la columna 'Nombre' del DataFrame `df_personas`. El resultado será un objeto Series.</div><div class="code-container"><pre># (Continuación del Paso 3)
+         <div class="workshop-step" id="step11"><div class="step-title">Paso 11: Seleccionar una Columna</div><div class="step-description">Selecciona únicamente la columna ['Nombre'] del DataFrame `df_personas`. El resultado será un objeto Series.</div><div class="code-container"><pre># (Continuación del Paso 3)
 # df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
 
 columna_nombre = df_personas<span class="code-placeholder" id="step11-part1" contenteditable="true">[...]</span> <span class="code-comment"># Rellena: Selección de columna por nombre (usa corchetes)</span>
 print("Columna 'Nombre':")
 print(columna_nombre)</pre></div><button class="action-button" onclick="checkStep(11)">Comprobar Paso</button><div id="step11-feedback" class="feedback-area"></div></div>
 
-        <div class="workshop-step" id="step12"><div class="step-title">Paso 12: Seleccionar Múltiples Columnas</div><div class="step-description">Selecciona las columnas 'Nombre' y 'Ciudad' del DataFrame `df_personas`. El resultado será otro DataFrame.</div><div class="code-container"><pre># (Continuación del Paso 3)
+                 <div class="workshop-step" id="step12"><div class="step-title">Paso 12: Seleccionar Múltiples Columnas</div><div class="step-description">Selecciona las columnas 'Nombre' y 'Ciudad' del DataFrame `df_personas`. El resultado será otro DataFrame.</div><div class="code-container"><pre># (Continuación del Paso 3)
 # df_personas = pd.DataFrame({'Nombre': ['Ana', 'Luis', 'Marta', 'Juan'], 'Edad': [28, 34, 29, 42], 'Ciudad': ['Medellin', 'Bogota', 'Medellin', 'Cali']})
 
-columnas_seleccionadas = df_personas<span class="code-placeholder" id="step12-part1" contenteditable="true">[...]</span> <span class="code-comment"># Rellena: Selección de múltiples columnas (usa una lista dentro de corchetes)</span>
+columnas_seleccionadas = df_personas<span class="code-placeholder" id="step12-part1" contenteditable="true">[...]</span> <span class="code-comment"># Rellena: Selección de múltiples columnas (usa doble corchete [['col1', 'col2']])</span>
 print("Columnas 'Nombre' y 'Ciudad':")
 print(columnas_seleccionadas)</pre></div><button class="action-button" onclick="checkStep(12)">Comprobar Paso</button><div id="step12-feedback" class="feedback-area"></div></div>
 
@@ -345,8 +345,8 @@ print(df_personas.loc[indice_max_edad])</pre></div><button class="action-button"
             step8: ["read_excel"],
             step9: ["head"],
             step10: ["tail"],
-            step11: [['Nombre']], // Aceptar comillas simples o dobles
-            step12: [[['Nombre', 'Ciudad']]], // Aceptar comillas simples o dobles
+            step11: ["['Nombre']"],
+            step12: ["[['Nombre', 'Ciudad']]"],
             step13: ["columns"],
             step14: [">"],
             step15: ["=="],
@@ -354,7 +354,7 @@ print(df_personas.loc[indice_max_edad])</pre></div><button class="action-button"
             step17: ["|"],
             step18: ["isin"],
             step19: ["query"],
-            step20: ["['Edad']"], // Aceptar comillas simples o dobles
+            step20: ["['Edad']"],
             step21: ["/"],
             step22: ["apply"],
             step23: ["loc"],
@@ -391,6 +391,31 @@ print(df_personas.loc[indice_max_edad])</pre></div><button class="action-button"
                 // Normalizaciones específicas
                 let normalizedUserAnswer = userAnswer;
                 let normalizedCorrectAnswer = correctAnswer;
+
+                // Casos especiales para paso 11 y 12
+                if (stepId === 'step11') {
+                    if (userAnswer === "['Nombre']" || userAnswer === '["Nombre"]') {
+                        placeholder.classList.add("correct");
+                        correctCount++;
+                        continue;
+                    }
+                }
+                
+                if (stepId === 'step12') {
+                    // Manejar diferentes variaciones de espacios y comillas
+                    const pattern1 = /\[\s*\[\s*['"]Nombre['"]\s*,\s*['"]Ciudad['"]\s*\]\s*\]/i;
+                    const pattern2 = /\[\s*\[\s*['"]nombre['"]\s*,\s*['"]ciudad['"]\s*\]\s*\]/i;
+                    
+                    if (pattern1.test(userAnswer) || pattern2.test(userAnswer) || 
+                        userAnswer === "[['Nombre','Ciudad']]" || 
+                        userAnswer === "[['Nombre', 'Ciudad']]" || 
+                        userAnswer === '[["Nombre","Ciudad"]]' || 
+                        userAnswer === '[["Nombre", "Ciudad"]]') {
+                        placeholder.classList.add("correct");
+                        correctCount++;
+                        continue;
+                    }
+                }
 
                 // Permitir comillas simples o dobles en selecciones
                  if (stepId === 'step11' || stepId === 'step12' || stepId === 'step20') {
@@ -453,7 +478,8 @@ print(df_personas.loc[indice_max_edad])</pre></div><button class="action-button"
                  // Añadir pistas específicas si es posible
                  if (stepId === 'step1') hint = "Revisa la palabra clave para importar y el alias común.";
                  else if (stepId === 'step5' && !allCorrect && correctCount === 1) hint = "Verifica el valor booleano para omitir el índice.";
-                 else if (stepId === 'step12') hint = "Recuerda usar una lista de nombres *dentro* de los corchetes.";
+                 else if (stepId === 'step11') hint = "Recuerda usar corchetes alrededor del nombre de la columna: ['Nombre']";
+                 else if (stepId === 'step12') hint = "Para múltiples columnas, usa doble corchete: [['Nombre', 'Ciudad']]";
                  else if (stepId === 'step16' || stepId === 'step17') hint = "Asegúrate de poner paréntesis `()` alrededor de cada condición antes de usar `&` o `|`.";
                  else if (stepId === 'step23' || stepId === 'step25') hint = "Revisa si estás usando `.loc` correctamente para selección por etiquetas.";
                  else if (stepId === 'step24') hint = "Revisa si estás usando `.iloc` correctamente para selección por posición.";
